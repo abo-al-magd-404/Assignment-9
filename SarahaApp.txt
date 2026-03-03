@@ -1,0 +1,144 @@
+|====================|
+|=Saraha=Application=|
+|====================|
+in this app we are focus on building hidden sender message and receiver get his message and can reply on it if the sender has account.
+
+User
+    first_name,
+    last_name,
+    email,
+    password,
+    phone,
+    gender : male , female
+    confirm_email,
+    change_credential_time,
+    provider [signup google & system],
+    cover pic array,
+    address
+
+message
+    body -> text, image, emoji,
+    attachments,
+    destination_id,
+    sender_id
+
+functional
+    user
+        signup,
+        login,
+        Forgot_password,
+        profile,
+        update,
+        soft_delete,
+        update_password
+    message
+        create,
+        get,
+        soft_delete
+
+non_functional
+    security 
+        hash,
+        encryption,
+        email verification,
+        validation
+    
+    scalability
+    
+    performance
+
+    availability
+
+
+<<<<<SPRINTS>>>>>
+sprint*1
+    a. SDLC
+    b. Folder Structure
+    c. data_base connection
+    d. data_base repository
+    e. signup, login
+    f. hash
+    g. encryption
+
+sprint*2
+    a. profile
+    b. token
+    c. authentication
+    d. authorization
+    e. validation
+    f. send_email
+
+sprint*3
+    a. google account
+    b. file upload
+    c. administration level
+    d. deployment on AWS EC2
+
+<<<<<difference between symmetric & Asymmetric encryption>>>>>
+
+Symmetric Encryption
+    * Uses one shared key
+    * Same key encrypts and decrypts data
+    * Fast
+    * Key must be shared securely
+    Example: AES
+
+Asymmetric Encryption
+    * Uses two keys
+    * Public key (encrypt)
+    * Private key (decrypt)
+    * Slower
+    * More secure for key exchange
+    Example: RSA
+
+<<<<<How signup + email OTP works>>>>>
+1️⃣ User signs up
+The user enters email only (or email + password).
+You do NOT activate the account yet.
+
+2️⃣ Backend generates an OTP
+Your server:
+Generates a random 6-digit number
+Sets an expiration time (for example: 10 minutes)
+Hashes the OTP (never store it as plain text)
+
+3️⃣ Save OTP in database
+In MongoDB, store:
+email
+hashed OTP
+OTP expiration time
+isVerified = false
+This lets you:
+validate the OTP later
+prevent reuse
+auto-expire it
+
+4️⃣ Send OTP to email
+Your backend sends an email containing:
+the OTP
+a message like “This code expires in 10 minutes”
+The email is sent from the server, not from the client.
+5️⃣ User enters OTP
+The user receives the email and types the OTP in your app.
+
+6️⃣ Verify OTP
+Your backend:
+Finds the user by email
+Checks if OTP is expired
+Compares the entered OTP with the hashed OTP
+If correct → mark account as verified
+
+7️⃣ Cleanup
+After successful verification:
+Remove OTP from database
+Set isVerified = true
+Allow login or continue signup
+Why this is secure
+OTP is hashed, so even DB leaks are safe
+OTP has expiration
+Email ownership is proven
+OTP can’t be reused
+
+>>>Typical flow (short)>>>
+Signup → Generate OTP → Email sent
+User enters OTP → Verify → Account activated
